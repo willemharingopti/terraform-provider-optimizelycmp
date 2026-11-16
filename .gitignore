@@ -1,0 +1,9 @@
+.env
+terraform-provider-optimizelycmp
+*.tfstate*
+.terraform/
+dist/
+*.asc
+*.gpg
+openapi.json
+.DS_Store
