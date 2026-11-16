@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 (2026-11-16)
 
 - Initial provider: folder and folder permission resources; user, team, workflow, template and publishing channel data sources.
 - `optimizelycmp_content_type` resource and data source (structured content types; destroy disables).
