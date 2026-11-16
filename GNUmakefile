@@ -1,7 +1,9 @@
 PROVIDER   := optimizelycmp
-# GoReleaser is downloaded and run by `make check` and `make snapshot`. Pin it to a specific version, for example
-# github.com/goreleaser/goreleaser/v2@v2.x.y, once you have chosen one: "latest" runs whatever was published most recently.
-GORELEASER ?= github.com/goreleaser/goreleaser/v2@latest
+# GoReleaser is downloaded and run by `make check` and `make snapshot`. It is pinned to a specific version so a rehearsal
+# builds the same way every time. To upgrade, change the version here, rehearse with `make snapshot`, and check
+# the GoReleaser release notes first: it signs and publishes the releases. Override for one run with
+# `make snapshot GORELEASER=github.com/goreleaser/goreleaser/v2@vX.Y.Z`.
+GORELEASER ?= github.com/goreleaser/goreleaser/v2@v2.20.2
 NAMESPACE  ?= willemharingopti
 VERSION    ?= 0.1.0
 OS_ARCH    := $(shell go env GOOS)_$(shell go env GOARCH)

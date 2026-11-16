@@ -64,8 +64,9 @@ experimental by CMP). Say so in the release notes, and expect minor versions bel
    make snapshot      # builds every platform into dist/
    ```
 
-   Both download and run GoReleaser. The version comes from `GORELEASER` in `GNUmakefile`; pin it to a specific version rather
-   than leaving it on `latest`.
+   Both download and run GoReleaser, pinned to the version in `GORELEASER` in `GNUmakefile` (currently v2.20.2). The release
+   workflow uses `goreleaser-action`, which has its own version (`~> v2`, see `release.yml`), so when you upgrade one, check the
+   other.
 5. Commit the changelog, then tag and push. The version must be `v` followed by a semantic version:
 
    ```sh
