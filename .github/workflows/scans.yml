@@ -1,0 +1,37 @@
+name: Security scans
+
+# govulncheck reports known vulnerabilities that this code can reach (in the Go standard library and in dependencies),
+# and staticcheck reports unused code and likely bugs. Both are pinned in the GNUmakefile, so CI and a developer's
+# terminal run exactly the same thing: `make scan`.
+#
+# They also run weekly, because new vulnerabilities are published without any change to this repository. GitHub only
+# runs scheduled workflows on the default branch, and pauses them after 60 days without repository activity.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 5 * * 1' # Mondays, 05:23 UTC
+
+# Least privilege: these jobs only read the repository.
+permissions:
+  contents: read
+
+jobs:
+  scans:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The Go version comes from go.mod, so the standard library that govulncheck checks is the one the release is built with.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: govulncheck
+        run: make vulncheck
+      # Run even if govulncheck failed, so one run shows every problem.
+      - name: staticcheck
+        if: ${{ !cancelled() }}
+        run: make staticcheck

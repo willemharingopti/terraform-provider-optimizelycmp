@@ -4,12 +4,16 @@ PROVIDER   := optimizelycmp
 # the GoReleaser release notes first: it signs and publishes the releases. Override for one run with
 # `make snapshot GORELEASER=github.com/goreleaser/goreleaser/v2@vX.Y.Z`.
 GORELEASER ?= github.com/goreleaser/goreleaser/v2@v2.20.2
+# The security and lint scans are downloaded and run the same way, pinned to exact versions. Dependabot does not see these
+# (they are not in go.mod), so bump them by hand when you upgrade, and read what changed first.
+GOVULNCHECK ?= golang.org/x/vuln/cmd/govulncheck@v1.9.0
+STATICCHECK ?= honnef.co/go/tools/cmd/staticcheck@v0.8.2
 NAMESPACE  ?= willemharingopti
 VERSION    ?= 0.1.0
 OS_ARCH    := $(shell go env GOOS)_$(shell go env GOARCH)
 MIRROR     := $(HOME)/.terraform.d/plugins/registry.terraform.io/$(NAMESPACE)/$(PROVIDER)/$(VERSION)/$(OS_ARCH)
 
-.PHONY: build test testacc testacc-residue fmt vet docs install snapshot check
+.PHONY: build test testacc testacc-residue fmt vet vulncheck staticcheck scan docs install snapshot check
 
 build:
 	go build -o terraform-provider-$(PROVIDER) .
@@ -22,6 +26,18 @@ vet:
 
 test:
 	go test ./... -count=1
+
+# Reports known vulnerabilities (in the Go standard library and in dependencies) that this code can actually reach.
+# Results depend on the Go version in go.mod, and new vulnerabilities appear over time without any code change.
+vulncheck:
+	go run $(GOVULNCHECK) ./...
+
+# Static analysis: unused code, likely bugs and misuse of APIs.
+staticcheck:
+	go run $(STATICCHECK) ./...
+
+# Both scans. This is what CI runs.
+scan: vulncheck staticcheck
 
 # Acceptance tests run against a REAL CMP account (use a sandbox). Credentials come from OPTIMIZELY_CMP_CLIENT_ID and
 # OPTIMIZELY_CMP_CLIENT_SECRET. testacc leaves nothing behind; testacc-residue also runs the content type and custom field

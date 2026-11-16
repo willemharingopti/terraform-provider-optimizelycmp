@@ -50,6 +50,7 @@ experimental by CMP). Say so in the release notes, and expect minor versions bel
 
    ```sh
    make test          # unit tests and the mock-API tests (needs Terraform on the PATH for the mock-API tests)
+   make scan          # govulncheck and staticcheck: no reachable vulnerabilities, no lint findings
    make docs          # must leave no changes in docs/ (CI fails if it does)
    git status         # clean, apart from the changelog edit
    ```
@@ -64,7 +65,8 @@ experimental by CMP). Say so in the release notes, and expect minor versions bel
    make snapshot      # builds every platform into dist/
    ```
 
-   Both download and run GoReleaser, pinned to the version in `GORELEASER` in `GNUmakefile` (currently v2.20.2). The release
+   Both download and run GoReleaser, pinned to the version in `GORELEASER` in `GNUmakefile` (currently v2.20.2). The scans are
+   pinned the same way (`GOVULNCHECK`, `STATICCHECK`). Dependabot cannot update these three, so review them when you cut a release. The release
    workflow uses `goreleaser-action`, which has its own version (`~> v2`, see `release.yml`), so when you upgrade one, check the
    other.
 5. Commit the changelog, then tag and push. The version must be `v` followed by a semantic version:

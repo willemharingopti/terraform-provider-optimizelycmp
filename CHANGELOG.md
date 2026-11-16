@@ -13,3 +13,5 @@
 - Hardening: a 302 is only accepted for the user lookup, oversized responses and endless pagination are refused, and unknown provider settings are rejected instead of read as unset.
 - Settings export is cached briefly and cleared by every write, so refreshing many settings-based resources downloads it once.
 - `internal/mockcmp` and `TestMock*` tests: the resources are now tested end to end in CI without a CMP account.
+- Security: updated `golang.org/x/net`, `golang.org/x/text`, `golang.org/x/crypto` and `google.golang.org/grpc` (indirect dependencies) and raised the Go version to 1.27.4, which fixes the 18 vulnerabilities `govulncheck` found reachable in this code.
+- `make scan` and a `Security scans` workflow (govulncheck and staticcheck, pinned; on every push, pull request and weekly).

@@ -55,6 +55,7 @@ Step-by-step guides are in [docs/guides/](docs/guides/):
 | Command | What it does |
 |---|---|
 | `make test` | unit tests and the mock-API tests (`TestMock*`); no credentials needed. This is what CI runs (with the race detector). The mock tests run the real provider through the real Terraform CLI against `internal/mockcmp`, an in-memory fake of the CMP API, and are skipped if Terraform is not installed. |
+| `make scan` | `govulncheck` (known vulnerabilities this code can reach, in the Go standard library and in dependencies) and `staticcheck` (unused code, likely bugs). Both are pinned in the `GNUmakefile`. CI runs this on every push and pull request, and weekly, because new vulnerabilities are published without any change here. |
 | `make testacc` | acceptance tests against a **real CMP account** (use a sandbox). Needs `OPTIMIZELY_CMP_CLIENT_ID` and `OPTIMIZELY_CMP_CLIENT_SECRET` and Terraform on the PATH. Covers folders, folder permissions and the data sources, and cleans up after itself. |
 | `make testacc-residue` | also runs the content type, custom field, label group, webhook, app and routing rule tests. The API cannot delete those, so **each run leaves a disabled content type, two inactive fields, a label group, a webhook, an app and a routing rule behind** (named `tfacc-...`) for an admin to remove by hand. |
 
