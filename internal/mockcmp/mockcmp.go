@@ -8,15 +8,12 @@
 package mockcmp
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"sort"
 	"strconv"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -243,12 +240,6 @@ func boolean(m map[string]json.RawMessage, k string) (bool, bool) {
 	return v, true
 }
 
-func strs(raw json.RawMessage) []string {
-	var v []string
-	_ = json.Unmarshal(raw, &v)
-	return v
-}
-
 // paged answers a list endpoint with the offset/page_size pagination the real API uses.
 func paged(w http.ResponseWriter, r *http.Request, total int, item func(i int) any) {
 	q := r.URL.Query()
@@ -273,16 +264,6 @@ func paged(w http.ResponseWriter, r *http.Request, total int, item func(i int) a
 
 func pagedList[T any](w http.ResponseWriter, r *http.Request, items []T, conv func(T) any) {
 	paged(w, r, len(items), func(i int) any { return conv(items[i]) })
-}
-
-func slug(name string) string {
-	return strings.ReplaceAll(strings.ToLower(strings.TrimSpace(name)), " ", "_")
-}
-
-func randHex() string {
-	b := make([]byte, 4)
-	_, _ = rand.Read(b)
-	return hex.EncodeToString(b)
 }
 
 func sortedCopy(in []string) []string {

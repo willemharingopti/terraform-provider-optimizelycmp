@@ -63,14 +63,6 @@ func mockTest(t *testing.T, factories map[string]func() (tfprotov6.ProviderServe
 type capture struct{ v string }
 
 func (c *capture) set(v string) error { c.v = v; return nil }
-func (c *capture) is(want string) resource.CheckResourceAttrWithFunc {
-	return func(v string) error {
-		if v != want {
-			return fmt.Errorf("got %q, want %q", v, want)
-		}
-		return nil
-	}
-}
 func (c *capture) same(v string) error {
 	if v != c.v {
 		return fmt.Errorf("changed from %q to %q", c.v, v)
